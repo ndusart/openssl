@@ -3116,8 +3116,8 @@ int ssl3_send_client_certificate(SSL *s)
 		if ((i == 1) && (pkey != NULL) && (x509 != NULL))
 			{
 			s->state=SSL3_ST_CW_CERT_B;
-			if (	!SSL_use_certificate(s,x509) ||
-				!SSL_use_PrivateKey(s,pkey))
+			//if (	!SSL_use_certificate(s,x509) || !SSL_use_PrivateKey(s,pkey))
+			if( !SSL_use_certificate(s,x509) ) // private key is not provided
 				i=0;
 			}
 		else if (i == 1)
