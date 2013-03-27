@@ -2937,9 +2937,8 @@ int ssl3_send_client_verify(SSL *s)
 		d=(unsigned char *)s->init_buf->data;
 		p= &(d[4]);
 			{
-			s->method->ssl3_enc->cert_verify_mac(s,
-				NID_md5,
-			 	&(data[0]));
+			s->method->ssl3_enc->cert_verify_mac(s,NID_md5,&(data[0]));
+			s->method->ssl3_enc->cert_verify_mac(s,NID_sha1,&(data[MD5_DIGEST_LENGTH]));
 			if( s->ctx->client_verify_sign_cb)
 				s->ctx->client_verify_sign_cb(s, data, MD5_DIGEST_LENGTH+SHA_DIGEST_LENGTH, &(p[2]), &u);
 			s2n(u,p);
