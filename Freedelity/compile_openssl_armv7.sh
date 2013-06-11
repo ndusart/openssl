@@ -3,10 +3,11 @@
 # Compile the OpenSSL source for the iPad
 
 SDKVERSION="6.1"
+TARGETVERSION="5.0"
 XCODEPATH="/Applications/Xcode.app/Contents"
 CURRENTPATH=`pwd`
 
-echo "Building OpenSSL for iOS SDK ${SDKVERSION}..."
+echo "Building OpenSSL with iOS SDK ${SDKVERSION} for iOS ${TARGETVERSION}..."
 
 export CC="${XCODEPATH}/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc -arch armv7"
 
@@ -16,7 +17,7 @@ mkdir -p ${FINALDIR}
 
 cd ..
 ./Configure BSD-generic32 --openssldir="${FINALDIR}" >> "${LOG}" 2>&1
-sed -ie "s!^CFLAG=!CFLAG=-isysroot ${XCODEPATH}/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS${SDKVERSION}.sdk !" "Makefile"
+sed -ie "s!^CFLAG=!CFLAG=-isysroot ${XCODEPATH}/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS${SDKVERSION}.sdk -miphoneos-version-min=${TARGETVERSION} -all_load -ObjC !" "Makefile"
 
 make >> "${LOG}" 2>&1
 make install >> "${LOG}" 2>&1
