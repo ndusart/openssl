@@ -1,7 +1,7 @@
 #!/bin/sh
 SDKVERSION="7.0"
 TARGETVERSION="5.0"
-ARCHS="arm64 armv7 armv7s arm64"
+ARCHS="i386 armv7 armv7s arm64"
 CURRENTPATH=`pwd`
 OPENSSL_PATH="${CURRENTPATH}/src"
 BUILD_DIR="${CURRENTPATH}/build"
@@ -23,9 +23,16 @@ for ARCH in ${ARCHS}
 do
 	echo "... for architecture ${ARCH}"
 
+	if [ "${ARCH}" == "i386" ];
+	then
+		PLATFORM="iPhoneSimulator"
+	else
+		PLATFORM="iPhoneOS"
+	fi
+
 	MINTARGET=$TARGETVERSION
 
-	if [ $ARCH == "arm64" && $TARGETVERSION \< "7.0" ];
+	if [ "$ARCH" == "arm64" ] && [ "$TARGETVERSION" \< "7.0" ];
 	then
 		echo "(min target for arm64 is iOS 7.0)..."
 		MINTARGET=7.0
@@ -38,7 +45,7 @@ do
 	LOG="${ARCHPATH}/build_openssl.log"
 	
 	./Configure BSD-generic32 --openssldir="${ARCHPATH}" > "${LOG}" 2>&1
-	sed -ie "s!^CFLAG=!CFLAG=-isysroot ${XCODEPATH}/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS${SDKVERSION}.sdk -miphoneos-version-min=${MINTARGET} -all_load -ObjC !" "Makefile"
+	sed -ie "s!^CFLAG=!CFLAG=-isysroot ${XCODEPATH}/Developer/Platforms/${PLATFORM}.platform/Developer/SDKs/${PLATFORM}${SDKVERSION}.sdk -miphoneos-version-min=${MINTARGET} -all_load -ObjC !" "Makefile"
 
 	make >> "$LOG" 2>&1
 	make install >> "$LOG" 2>&1
@@ -50,8 +57,8 @@ done
 
 echo "Build common library..."
 
-lipo -create "${SSL_LIBS}" -output "${INSTALL_PATH}/libssl.a"
-lipo -create "${CRYPTO_LIBS}" -output "${INSTALL_PATH/libcrypto.a"
+lipo -create ${SSL_LIBS} -output "${INSTALL_PATH}/libssl.a"
+lipo -create ${CRYPTO_LIBS} -output "${INSTALL_PATH}/libcrypto.a"
 
 mkdir -p "${CURRENTPATH}/include"
 cp -R "${ARCHPATH}/include/openssl" "${CURRENTPATH}/include/"
