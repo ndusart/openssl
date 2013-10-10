@@ -26,7 +26,7 @@ TEST=
 APPS=
 
 LIB=$(TOP)/libcrypto.a
-LIBNAMES= 4758cca aep atalla cswift gmp chil nuron sureware ubsec padlock capi
+LIBNAMES= 4758cca aep atalla cswift gmp chil nuron sureware ubsec padlock capi callbacks
 
 LIBSRC=	e_4758cca.c \
 	e_aep.c \
@@ -38,7 +38,8 @@ LIBSRC=	e_4758cca.c \
 	e_sureware.c \
 	e_ubsec.c \
 	e_padlock.c \
-	e_capi.c
+	e_capi.c \
+	e_callbacks.c
 LIBOBJ= e_4758cca.o \
 	e_aep.o \
 	e_atalla.o \
@@ -49,7 +50,8 @@ LIBOBJ= e_4758cca.o \
 	e_sureware.o \
 	e_ubsec.o \
 	e_padlock.o \
-	e_capi.o
+	e_capi.o \
+	e_callbacks.o
 
 SRC= $(LIBSRC)
 
