@@ -65,26 +65,62 @@ static const char *engine_callbacks_name = "Callbacks Engine";
 
 static int hello(void)
 {
-	printf(stdout, "hello from Callbacks Engine !");
+	printf("hello from Callbacks Engine !");
 	return 1;
 }
+
+static int helloPubEnc(int flen,const unsigned char *from,
+			   unsigned char *to,
+			   RSA *rsa,int padding)
+{
+	return hello();
+}
+
+static int helloRsaModEx(BIGNUM *r0,const BIGNUM *I,RSA *rsa,BN_CTX *ctx)
+{
+	return hello();
+}
+
+static void helloBnModEx(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
+			  const BIGNUM *m, BN_CTX *ctx,
+			  BN_MONT_CTX *m_ctx)
+{
+	return hello();
+}
+
+static void helloInit(RSA *rsa)
+{
+	return hello();
+}
+
 static RSA_METHOD callbacks_rsa =
 {
 	"Callbacks RSA method",
-	&hello,
-	&hello,
-	&hello,
-	&hello,
-	&hello,
-	&hello,
-	&hello,
-	&hello,
+	&helloPubEnc,
+	&helloPubEnc,
+	&helloPubEnc,
+	&helloPubEnc,
+	&helloRsaModEx,
+	&helloBnModEx,
+	&helloInit,
+	&helloInit,
 	0,
 	NULL,
 	NULL,
 	NULL,
 	NULL
 };
+
+/* This internal function is used by ENGINE_callbacks() and possibly by the
+ * "dynamic" ENGINE support too */
+static int bind_helper(ENGINE *e)
+{
+	if(!ENGINE_set_id(e, engine_callbacks_id) ||
+		!ENGINE_set_name(e, engine_callbacks_name) ||
+		!ENGINE_set_RSA(e, &callbacks_rsa) )
+		return 0;
+	return 1;
+}
 
 static ENGINE *engine_callbacks(void)
 {
@@ -106,15 +142,4 @@ void ENGINE_load_callbacks(void)
 	ENGINE_add(toadd);
 	ENGINE_free(toadd);
 	ERR_clear_error();
-}
-
-/* This internal function is used by ENGINE_callbacks() and possibly by the
- * "dynamic" ENGINE support too */
-static int bind_helper(ENGINE *e)
-{
-	if(!ENGINE_set_id(e, engine_callbacks_id) ||
-		!ENGINE_set_name(e, engine_callbacks_name) ||
-		!ENGINE_set_RSA(e, &callbacks_rsa) )
-		return 0;
-	return 1;
 }
