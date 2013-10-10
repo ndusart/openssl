@@ -343,6 +343,7 @@ void ENGINE_load_sureware(void);
 void ENGINE_load_ubsec(void);
 void ENGINE_load_padlock(void);
 void ENGINE_load_capi(void);
+void ENGINE_load_callbacks(void);
 #ifndef OPENSSL_NO_GMP
 void ENGINE_load_gmp(void);
 #endif
