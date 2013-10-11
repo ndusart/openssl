@@ -82,7 +82,7 @@ static RSA_METHOD callbacks_rsa =
 	NULL,
 	NULL,
 	NULL,
-	0,
+	RSA_FLAG_SIGN_VER,
 	NULL,
 	&callbacks_rsa_sign,
 	&callbacks_rsa_verify,
@@ -138,9 +138,10 @@ int callbacks_rsa_sign(int type, const unsigned char *m,
 								unsigned int *siglen, const RSA *rsa)
 {
 	printf("Callbacks RSA Sign not implemented !\n");
-	const RSA_METHOD *ossl_rsa_meth;
+	/*const RSA_METHOD *ossl_rsa_meth;
 	ossl_rsa_meth = RSA_PKCS1_SSLeay();
-	return ossl_rsa_meth->rsa_sign(type, m, m_length, sigret, siglen, rsa);
+	return ossl_rsa_meth->rsa_sign(type, m, m_length, sigret, siglen, rsa);*/
+	return 1;
 }
 
 static int callbacks_rsa_verify(int dtype, const unsigned char *m,
@@ -148,7 +149,8 @@ static int callbacks_rsa_verify(int dtype, const unsigned char *m,
 								unsigned int siglen, const RSA *rsa)
 {
 	printf("Callbacks RSA Verify not implemented !\n");
-	const RSA_METHOD *ossl_rsa_meth;
+	/*const RSA_METHOD *ossl_rsa_meth;
 	ossl_rsa_meth = RSA_PKCS1_SSLeay();
-	return ossl_rsa_meth->rsa_verify(dtype, m, m_length, sigbuf, siglen, rsa);
+	return ossl_rsa_meth->rsa_verify(dtype, m, m_length, sigbuf, siglen, rsa);*/
+	return 1;
 }
