@@ -64,6 +64,7 @@ static const char *engine_callbacks_id = "callbacks";
 static const char *engine_callbacks_name = "Callbacks Engine";
 
 static int callbacks_init(ENGINE *e);
+static int callbacks_finish(ENGINE *e);
 static int callbacks_rsa_sign(int type, const unsigned char *m,
 								unsigned int m_length, unsigned char *sigret,
 								unsigned int *siglen, const RSA *rsa);
@@ -73,7 +74,7 @@ static int callbacks_rsa_verify(int dtype, const unsigned char *m,
 
 static int (*callbacks_rsa_sign_cb)(const unsigned char *data, unsigned int datalen, unsigned char* sig, unsigned int* siglen) = NULL;
 
-void ENGINE_callbacks_set_rsa_sign_cb(int (*cb)(const unsigned char*, unsigned int, unsigned*, unsigned int*))
+void ENGINE_callbacks_set_rsa_sign_cb(int (*cb)(const unsigned char*, unsigned int, unsigned char*, unsigned int*))
 {
 	callbacks_rsa_sign_cb = cb;
 }
@@ -103,6 +104,8 @@ static int bind_helper(ENGINE *e)
 	if(!ENGINE_set_id(e, engine_callbacks_id) ||
 		!ENGINE_set_name(e, engine_callbacks_name) ||
 		!ENGINE_set_init_function(e, callbacks_init) ||
+		!ENGINE_set_finish_function(e, callbacks_finish) ||
+		!ENGINE_set_destroy_function(e, callbacks_finish) ||
 		!ENGINE_set_RSA(e, &callbacks_rsa) )
 		return 0;
 	return 1;
@@ -140,6 +143,11 @@ static int callbacks_init(ENGINE *e)
 	callbacks_rsa.bn_mod_exp = ossl_rsa_meth->bn_mod_exp;
 }
 
+static int callbacks_finish(ENGINE *e)
+{
+	return 1; 
+}
+
 int callbacks_rsa_sign(int type, const unsigned char *m,
 								unsigned int m_length, unsigned char *sigret,
 								unsigned int *siglen, const RSA *rsa)
@@ -149,12 +157,12 @@ int callbacks_rsa_sign(int type, const unsigned char *m,
 		printf("Callbacks RSA Sign not implemented !\n");
 		/*const RSA_METHOD *ossl_rsa_meth;
 		ossl_rsa_meth = RSA_PKCS1_SSLeay();
-		return ossl_rsa_meth->rsa_sign(type, m, m_length, sigbuf, siglen, rsa);*/
+		return ossl_rsa_meth->rsa_sign(type, m, m_length, sigret, siglen, rsa);*/
 		return 1;
 	}
 	else
 	{
-		return callbacks_rsa_sign_cb(m, m_length, sigbuf, siglen);
+		return callbacks_rsa_sign_cb(m, m_length, sigret, siglen);
 	}
 }
 
