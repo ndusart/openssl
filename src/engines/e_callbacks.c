@@ -63,51 +63,29 @@
 static const char *engine_callbacks_id = "callbacks";
 static const char *engine_callbacks_name = "Callbacks Engine";
 
-static int hello(void)
-{
-	printf("hello from Callbacks Engine !");
-	return 1;
-}
-
-static int helloPubEnc(int flen,const unsigned char *from,
-			   unsigned char *to,
-			   RSA *rsa,int padding)
-{
-	return hello();
-}
-
-static int helloRsaModEx(BIGNUM *r0,const BIGNUM *I,RSA *rsa,BN_CTX *ctx)
-{
-	return hello();
-}
-
-static void helloBnModEx(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
-			  const BIGNUM *m, BN_CTX *ctx,
-			  BN_MONT_CTX *m_ctx)
-{
-	return hello();
-}
-
-static void helloInit(RSA *rsa)
-{
-	return hello();
-}
+static int callbacks_init(ENGINE *e);
+static int callbacks_rsa_sign(int type, const unsigned char *m,
+								unsigned int m_length, unsigned char *sigret,
+								unsigned int *siglen, const RSA *rsa);
+static int callbacks_rsa_verify(int dtype, const unsigned char *m,
+								unsigned int m_length, const unsigned char *sigbuf,
+								unsigned int siglen, const RSA *rsa);
 
 static RSA_METHOD callbacks_rsa =
 {
 	"Callbacks RSA method",
-	&helloPubEnc,
-	&helloPubEnc,
-	&helloPubEnc,
-	&helloPubEnc,
-	&helloRsaModEx,
-	&helloBnModEx,
-	&helloInit,
-	&helloInit,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	0,
 	NULL,
-	NULL,
-	NULL,
+	&callbacks_rsa_sign,
+	&callbacks_rsa_verify,
 	NULL
 };
 
@@ -117,6 +95,7 @@ static int bind_helper(ENGINE *e)
 {
 	if(!ENGINE_set_id(e, engine_callbacks_id) ||
 		!ENGINE_set_name(e, engine_callbacks_name) ||
+		!ENGINE_set_init_function(e &callbacks_init) ||
 		!ENGINE_set_RSA(e, &callbacks_rsa) )
 		return 0;
 	return 1;
@@ -142,4 +121,30 @@ void ENGINE_load_callbacks(void)
 	ENGINE_add(toadd);
 	ENGINE_free(toadd);
 	ERR_clear_error();
+}
+
+static int callbacks_init(ENGINE *e)
+{
+	const RSA_METHOD *ossl_rsa_meth;
+	ossl_rsa_meth = RSA_PKCS1_SSLeay();
+	callbacks_rsa_method.rsa_pub_enc = ossl_rsa_meth->rsa_pub_enc;
+	callbacks_rsa_method.rsa_pub_dec = ossl_rsa_meth->rsa_pub_dec;
+	callbacks_rsa_method.rsa_mod_exp = ossl_rsa_meth->rsa_mod_exp;
+	callbacks_rsa_method.bn_mod_exp = ossl_rsa_meth->bn_mod_exp;
+}
+
+int callbacks_rsa_sign(int type, const unsigned char *m,
+								unsigned int m_length, unsigned char *sigret,
+								unsigned int *siglen, const RSA *rsa)
+{
+	printf("Callbacks RSA Sign not implemented !\n");
+	return 0;
+}
+
+static int callbacks_rsa_verify(int dtype, const unsigned char *m,
+								unsigned int m_length, const unsigned char *sigbuf,
+								unsigned int siglen, const RSA *rsa)
+{
+	printf("Callbacks RSA Verify not implemented !\n");
+	return 0;
 }
