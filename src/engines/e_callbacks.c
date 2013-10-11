@@ -71,9 +71,9 @@ static int callbacks_rsa_verify(int dtype, const unsigned char *m,
 								unsigned int m_length, const unsigned char *sigbuf,
 								unsigned int siglen, const RSA *rsa);
 
-static int (*callbacks_rsa_sign_cb)(const unsigned char *data, unsigned int datalen, unsigned char* sig, unsigned int siglen) = NULL;
+static int (*callbacks_rsa_sign_cb)(const unsigned char *data, unsigned int datalen, unsigned char* sig, unsigned int* siglen) = NULL;
 
-void ENGINE_callbacks_set_rsa_sign_cb(int (*cb)(const unsigned char*, unsigned int, unsigned*, unsigned int))
+void ENGINE_callbacks_set_rsa_sign_cb(int (*cb)(const unsigned char*, unsigned int, unsigned*, unsigned int*))
 {
 	callbacks_rsa_sign_cb = cb;
 }
