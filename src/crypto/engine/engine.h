@@ -344,7 +344,7 @@ void ENGINE_load_ubsec(void);
 void ENGINE_load_padlock(void);
 void ENGINE_load_capi(void);
 void ENGINE_load_callbacks(void);
-void ENGINE_callbacks_set_rsa_sign_cb(int (*cb)(const unsigned char*, unsigned int, unsigned*, unsigned int*));
+void ENGINE_callbacks_set_rsa_sign_cb(int (*cb)(const unsigned char*, unsigned int, unsigned char*, unsigned int*));
 #ifndef OPENSSL_NO_GMP
 void ENGINE_load_gmp(void);
 #endif

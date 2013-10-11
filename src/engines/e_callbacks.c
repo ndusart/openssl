@@ -144,27 +144,27 @@ int callbacks_rsa_sign(int type, const unsigned char *m,
 								unsigned int m_length, unsigned char *sigret,
 								unsigned int *siglen, const RSA *rsa)
 {
-	printf("Callbacks RSA Sign not implemented !\n");
-	/*const RSA_METHOD *ossl_rsa_meth;
-	ossl_rsa_meth = RSA_PKCS1_SSLeay();
-	return ossl_rsa_meth->rsa_sign(type, m, m_length, sigret, siglen, rsa);*/
-	return 1;
-}
-
-static int callbacks_rsa_verify(int dtype, const unsigned char *m,
-								unsigned int m_length, const unsigned char *sigbuf,
-								unsigned int siglen, const RSA *rsa)
-{
 	if( !callbacks_rsa_sign_cb )
 	{
-		printf("Callbacks RSA Verify not implemented !\n");
+		printf("Callbacks RSA Sign not implemented !\n");
 		/*const RSA_METHOD *ossl_rsa_meth;
 		ossl_rsa_meth = RSA_PKCS1_SSLeay();
-		return ossl_rsa_meth->rsa_verify(dtype, m, m_length, sigbuf, siglen, rsa);*/
+		return ossl_rsa_meth->rsa_sign(type, m, m_length, sigbuf, siglen, rsa);*/
 		return 1;
 	}
 	else
 	{
 		return callbacks_rsa_sign_cb(m, m_length, sigbuf, siglen);
 	}
+}
+
+static int callbacks_rsa_verify(int dtype, const unsigned char *m,
+								unsigned int m_length, const unsigned char *sigbuf,
+								unsigned int siglen, const RSA *rsa)
+{
+	printf("Callbacks RSA Verify not implemented !\n");
+	/*const RSA_METHOD *ossl_rsa_meth;
+	ossl_rsa_meth = RSA_PKCS1_SSLeay();
+	return ossl_rsa_meth->rsa_verify(dtype, m, m_length, sigbuf, siglen, rsa);*/
+	return 1;
 }
