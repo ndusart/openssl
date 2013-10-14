@@ -90,7 +90,7 @@ static RSA_METHOD callbacks_rsa =
 	NULL,
 	NULL,
 	NULL,
-	RSA_FLAG_SIGN_VER,
+	RSA_METHOD_FLAG_NO_CHECK,
 	NULL,
 	&callbacks_rsa_sign,
 	&callbacks_rsa_verify,
